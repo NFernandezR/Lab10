@@ -1,14 +1,19 @@
 // Lab10.c
 /*
 Norman Fernandez
-Lab Assignment 10
+COP3502C-24Spring 0039
+Computer Science 1 Lab Assignment #10
+This program will implement a trie data structure to efficiently store the words in a dictionary text file,
+and furthermore record the number of times the same word recurred in the dictionary.
+Functions to create the trie, read words from the dictionary, insert those words into the trie, deallocate the trie,
+and return the number of times, if any, a given word was inserted into the trie.
 */
 
 // Include called functions from header files.
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include <stdio.h> // Include standard I/O to read from file, fopen(), fscanf(), fclose().
+#include <stdlib.h> // Include standard memory allocation and deallocation, malloc() and free().
+#include <string.h> // Include string functions.
+#include <stdbool.h> // Include bool type, true and false definitions.
 
 // Define ALPHABET to be replaced with the integer 26 at compile time, for the 26 letters of the alphabet.
 #define ALPHABET 26
@@ -16,16 +21,18 @@ Lab Assignment 10
 // Trie structure
 struct Trie
 {
-    struct Trie* nextLetter[ALPHABET];
-    bool wordEnd;
-    int wordFrequency;
+    struct Trie* nextLetter[ALPHABET]; // An array of pointers to trie nodes, one pointer for each letter of the alphabet.
+    bool wordEnd; // When True, the trie node marks the end of a word. When false, the node does not mark the end of a word.
+    int wordFrequency; // The number of times the word this node marks the end of, if it exists, occurs in the dictionary.
 };
 
+// Function Declarations
 void insert(struct Trie *pTrie, char *word);
 int numberOfOccurances(struct Trie *pTrie, char *word);
 struct Trie *deallocateTrie(struct Trie *pTrie);
 struct Trie *createTrie();
 
+// Function Definitions
 // Inserts the word to the trie structure
 void insert(struct Trie *pTrie, char *word)
 {
@@ -42,10 +49,12 @@ void insert(struct Trie *pTrie, char *word)
         // Else the node does exist, so traverse to the next node.
         tmp = tmp->nextLetter[letterIndex];
     }
+
     // If the word was all ready entered into the trie, increment the word frequency counter.
     if (tmp->wordEnd == true) {
         tmp->wordFrequency++;
     }
+
     // Else, mark this node as the end of a word, and increment the word frequency counter.
     else {
         tmp->wordEnd = true;
@@ -132,6 +141,7 @@ struct Trie *createTrie()
 // and read all the words in the dictionary to the structure words
 int readDictionary(char *filename, char **pInWords)
 {
+    // Open the dictionary file, access the contents with a file pointer, fileCursor.
     FILE *fileCursor;
     fileCursor = fopen(filename, "r");
     // First line of input gives the number of words
@@ -146,8 +156,10 @@ int readDictionary(char *filename, char **pInWords)
             }
         }
     }
+
     // Close the dictionary file.
     fclose(fileCursor);
+
     // Return the number of unique words found in the array, and thus the dictionary file.
     return lineNum;
 }
