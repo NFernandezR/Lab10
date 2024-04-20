@@ -31,7 +31,7 @@ void insert(struct Trie *pTrie, char *word)
 {
     struct Trie* tmp = pTrie;
     // For every node except that which represents the null pointer...
-    for (int i = 0; word[i+1] != '\0'; i++) {
+    for (int i = 0; word[i] != '\0'; i++) {
         // Compute the index for the next letter's node...
         int letterIndex = word[i] - 'a';
         // Check if that node exists...
@@ -132,25 +132,22 @@ struct Trie *createTrie()
 // and read all the words in the dictionary to the structure words
 int readDictionary(char *filename, char **pInWords)
 {
-    FILE *txt;
-    txt = fopen(filename, "r");
+    FILE *fileCursor;
+    fileCursor = fopen(filename, "r");
     // First line of input gives the number of words
     int lineNum; // The number of lines in the dictionary.
-    fscanf(txt, "%d", &lineNum);
-    int wordNum = 0; // The number of unique words in the dictionary.
-    // Read the words in the dictionary to the word array.
-    for (int i = 0; i < lineNum; i++) {
-        // Initialize the char pointer, setting it to NULL...
-        pInWords[i] = NULL;
-        // Then, alloc mem for the string.
-        pInWords[i] = malloc(100*sizeof(char));
-        // Read a line from the dictionary file into the dynamically allocated string in the word array.
-        fgets(pInWords[i], 90, txt);
-        // Remove the trailing newline
-        pInWords[i][strlen(pInWords[i] - 1)] = '\0';
+
+    if (fileCursor != NULL) { // If the file pointer is not NULL...
+        fscanf(fileCursor, "%d", &lineNum); // Read the first line as the number of lines in the dictionary.
+        if (lineNum != 0) { // If that number of lines is non-zero...
+            for (int i = 0; i < lineNum; i++) { // For every line...
+                pInWords[i] = malloc(100*sizeof(char)); // Allocate memory for a string in the array...
+                fscanf(fileCursor, "%s", pInWords[i]); // Store the string in the array.
+            }
+        }
     }
     // Close the dictionary file.
-    fclose(txt);
+    fclose(fileCursor);
     // Return the number of unique words found in the array, and thus the dictionary file.
     return lineNum;
 }
